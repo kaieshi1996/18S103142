@@ -18,24 +18,26 @@ public class Game {
 			
 		}
 		else {
-			
+			PlayerA = new Player();
+			PlayerB = new Player();
+			gameType = "国际象棋";
 		}
 	}
 	//通过传入的两个玩家的名字初始化Game中的各类对象。初始化：从gameType_config.txt文件中读取游戏配置，
 	//初始化player，添加拥有的棋子，初始化棋盘，设置大小和类型。
 	//将gameBoard,playerA,playerB的引用传入Action新建gameAction对象。
 	public void iniGameWithPlayerName(String paName,String pbName) {
+		PlayerA.setPlayerName(paName);
+		PlayerB.setPlayerName(pbName);
+		gameBoard = new Board(gameType,PlayerA,PlayerB);
+		gameAction = new Action();
+		gameAction.setGameBoard(gameBoard);
+		gameAction.setPlayerA(PlayerA);
+		gameAction.setPlayerB(PlayerB);
+		Set<Piece> playerPieces_b = new HashSet<Piece>();
+		Set<Piece> playerPieces_w = new HashSet<Piece>();
+		Piece p;
 		if("围棋".equals(gameType)) {
-			PlayerA.setPlayerName(paName);
-			PlayerB.setPlayerName(pbName);
-			gameBoard = new Board(gameType,PlayerA,PlayerB);
-			gameAction = new Action();
-			gameAction.setGameBoard(gameBoard);
-			gameAction.setPlayerA(PlayerA);
-			gameAction.setPlayerB(PlayerB);
-			Set<Piece> playerPieces_b = new HashSet<Piece>();
-			Set<Piece> playerPieces_w = new HashSet<Piece>();
-			Piece p;
 			for(int i=1;i<=181;i++) {
 				p = new Piece(paName+"_"+i, 0);
 				playerPieces_b.add(p);
@@ -44,9 +46,17 @@ public class Game {
 					playerPieces_w.add(p);
 				}
 			}
-			PlayerA.setPlayerPieces(playerPieces_b);
-			PlayerB.setPlayerPieces(playerPieces_w);
+			
+		}else if("国际象棋".equals(gameType)){
+			for(int i=1;i<=16;i++) {
+				p = new Piece(paName+"_i"+i, 1);
+				playerPieces_b.add(p);
+				p = new Piece(pbName+"_i"+i, 1);
+				playerPieces_w.add(p);
+			}
 		}
+		PlayerA.setPlayerPieces(playerPieces_b);
+		PlayerB.setPlayerPieces(playerPieces_w);
 		
 	}
 	
@@ -55,16 +65,16 @@ public class Game {
 		
 	}
 	
-	public void movePiece (Player player, Position position1,Position position2) {  //调用gameAction
-		
+	public boolean movePiece (Player player, Position position1,Position position2) {  //调用gameAction
+		return getGameAction().move(player,position1,position2);
 	}
 
 	public void removePiece (Player player,Position position) {  //调用gameAction
 		getGameAction().removePiece(player,position);
 	}
 	
-	public void eatPiece (Player player,Position position1,Position position2) {  //调用gameAction
-		
+	public boolean eatPiece (Player player,Position position1,Position position2) {  //调用gameAction
+		return getGameAction().eat(player,position1,position2);
 	}
 	
 	public Player getOwnerAtCord(Position pos) {  //获得处于pos位置的棋子的所有者，获得pos位置的棋子piece，然后调用Player.isContainPiece判断属于playerA还是playerB。

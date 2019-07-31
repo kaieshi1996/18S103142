@@ -100,6 +100,7 @@ public class MyChessAndGoGame {
 									break;
 								}
 							}
+							//异常情况处理
 							if (px < 1 || px > 18 | py < 1 | py > 18) {
 								System.out.println(String.format("( %d , %d ) 输入位置违规", px, py));
 								continue;
@@ -132,7 +133,9 @@ public class MyChessAndGoGame {
 							int stX = Integer.valueOf(splitItems[0]), stY = Integer.valueOf(splitItems[1]),
 									edX = Integer.valueOf(splitItems[2]), edY = Integer.valueOf(splitItems[3]);
 							Player player = players.get(pNI);
-							game.movePiece(player, new Position(stX, stY), new Position(edX, edY));
+							if(!game.movePiece(player, new Position(stX, stY), new Position(edX, edY))) {
+								continue;
+							}
 							pNI = (pNI + 1) % 2;
 							System.out.println("[SUCCESS]");
 						} catch (NumberFormatException e) {
@@ -186,7 +189,10 @@ public class MyChessAndGoGame {
 							int stX = Integer.valueOf(splitItems[0]), stY = Integer.valueOf(splitItems[1]),
 									edX = Integer.valueOf(splitItems[2]), edY = Integer.valueOf(splitItems[3]);
 							Player player = players.get(pNI);
-							game.eatPiece(player, new Position(stX, stY), new Position(edX, edY));
+							if(!game.eatPiece(player, new Position(stX, stY), new Position(edX, edY))) {
+								continue;
+							}
+							
 							pNI = (pNI + 1) % 2;
 							System.out.println("[SUCCESS]");
 						} catch (NumberFormatException e) {
